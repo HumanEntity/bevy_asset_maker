@@ -22,10 +22,10 @@ macro_rules! create_asset {
             pub struct $asset_name {
                 $(
                     $(
-                        $handle_path: String,
+                        pub $handle_path: String,
                         #[serde(skip)]
                     )?
-                    $field_name : $field_type,
+                    pub $field_name : $field_type,
                 )*
             }
 
