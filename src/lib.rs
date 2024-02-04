@@ -19,6 +19,7 @@ macro_rules! create_asset {
             #[allow(unused_imports)]
             use super::*;
             #[derive(serde::Deserialize, bevy::asset::Asset, bevy::prelude::Reflect)]
+            #[derive($($derive ,)*)]
             pub struct $asset_name {
                 $(
                     $(
