@@ -21,6 +21,7 @@ macro_rules! create_asset {
             #[allow(unused_imports)]
             use super::*;
             #[derive(serde::Deserialize, bevy::asset::Asset, bevy::prelude::Reflect)]
+            #[cfg_attr(feature = "saver", derive(serde::Serialize))]
             #[derive($($derive ,)*)]
             #[reflect(Asset)]
             pub struct $asset_name {
@@ -90,6 +91,29 @@ macro_rules! create_asset {
 
                 fn extensions(&self) -> &[&str] {
                     $extensions
+                }
+            }
+            #[cfg(feature = "saver")]
+            impl bevy::asset::saver::AssetSaver for $asset_loader {
+                type Asset = $asset_name;
+                type Settings = ();
+                type Error = ron::Error;
+                type OutputLoader = Self;
+                fn save<'a>(
+                    &'a self,
+                    writer: &'a mut bevy::asset::io::Writer,
+                    asset: bevy::asset::saver::SavedAsset<'a, Self::Asset>,
+                    _settings: &'a Self::Settings
+                ) -> core::pin::Pin<Box<dyn core::future::Future<Output = Result<<Self::OutputLoader as bevy::asset::AssetLoader>::Settings, Self::Error>> + Send + 'a>> {
+                    use bevy::asset::AsyncWriteExt;
+                    Box::pin(async move {
+                        let asset = asset.get();
+                        let string = ron::ser::to_string_pretty(asset, ron::ser::PrettyConfig::default())?;
+                        let bytes = string.as_bytes();
+
+                        writer.write(&bytes).await?;
+                        Ok(())
+                    })
                 }
             }
         }
