@@ -17,10 +17,12 @@ macro_rules! create_asset {
         use $mod_name::{$asset_name, $asset_plugin};
         mod $mod_name {
             use bevy::prelude::*;
+            use bevy::asset::ReflectAsset;
             #[allow(unused_imports)]
             use super::*;
             #[derive(serde::Deserialize, bevy::asset::Asset, bevy::prelude::Reflect)]
             #[derive($($derive ,)*)]
+            #[reflect(Asset)]
             pub struct $asset_name {
                 $(
                     $(
