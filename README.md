@@ -9,15 +9,13 @@ Utility for creating content assets
 use bevy_asset_maker::*;
 
 create_asset!(
-    // Module, core functionality will be placed in
-    damage;
     // Additional derives
     Debug, Clone, Copy,;
     // Asset name
     DamageAsset
     // Fields
     damage : f32,
-    ;
+    ?;
     // Asset Plugin name
     DamageAssetPlugin,
     // Asset Loader name
