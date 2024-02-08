@@ -53,7 +53,6 @@ macro_rules! create_asset {
         $asset_loader:ident,
         $extensions:expr,
     ) => {
-        use bevy::prelude::*;
         use bevy::asset::ReflectAsset;
         #[allow(unused_imports)]
         #[derive(serde::Deserialize, bevy::asset::Asset, bevy::prelude::Reflect)]
@@ -74,7 +73,30 @@ macro_rules! create_asset {
                 pub $opt_field_name : Option<$opt_field_type>,
             )*
         }
-
+        create_asset!(
+            $asset_plugin,
+            $asset_loader,
+            $asset_name,
+            $extensions;
+            $(
+                $(
+                    $handle_path -> $field_name
+                )?
+            )*?
+            $(
+                $opt_handle_path -> $opt_field_name
+            )*;
+        );
+    };
+    (
+        $asset_plugin:ident,
+        $asset_loader:ident,
+        $asset_name:ident,
+        $extensions:expr;
+        $($handle_path:ident -> $field_name:ident)*?
+        $($opt_handle_path:ident -> $opt_field_name:ident)*;
+    ) => {
+        use bevy::prelude::*;
         pub struct $asset_plugin;
         impl bevy::prelude::Plugin for $asset_plugin {
             fn build(&self, app: &mut bevy::prelude::App) {
@@ -101,6 +123,11 @@ macro_rules! create_asset {
                                 $(
                                     asset.$field_name = asset_server.load(&asset.$handle_path);
                                 )?
+                            )*
+                            $(
+                                if let Some(path) = &asset.$opt_handle_path {
+                                    asset.$opt_field_name = Some(asset_server.load(path));
+                                }
                             )*
                         }
                     }
@@ -157,7 +184,7 @@ macro_rules! create_asset {
                 })
             }
         }
-    }
+    };
 }
 
 #[cfg(test)]
