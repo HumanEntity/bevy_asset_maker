@@ -1,5 +1,7 @@
 #![doc = include_str!("../README.md")]
 
+pub use serde;
+
 #[macro_export]
 macro_rules! create_asset {
     (
