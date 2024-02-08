@@ -36,9 +36,7 @@ macro_rules! create_asset {
                     AssetEvent::Added { id } => {
                         if let Some(asset) = assets.get_mut(*id) {
                             $(
-                                $(
-                                    asset.$field_name = asset_server.load(&asset.$handle_path);
-                                )?
+                                asset.$field_name = asset_server.load(&asset.$handle_path);
                             )*
                             $(
                                 if let Some(path) = &asset.$opt_handle_path {
@@ -204,6 +202,8 @@ mod test {
         simple;
         Debug, Clone,;
         SimpleAsset
+        firerate: f32,
+        test: Handle<Damage> = test_path,
         ?
         damage : Handle<Damage> = damage_path,;
         SimpleAssetPlugin,
