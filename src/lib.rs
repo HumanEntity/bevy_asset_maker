@@ -5,90 +5,6 @@ pub use serde;
 #[macro_export]
 macro_rules! create_asset {
     (
-        $mod_name:ident;
-        $($derive:ident,)*;
-        $asset_name:ident
-        $(
-            $field_name:ident : $field_type: ty $( = $handle_path:ident)?,
-        )*?
-        $(
-            $opt_field_name:ident : $opt_field_type: ty = $opt_handle_path:ident,
-        )*;
-        $asset_plugin:ident,
-        $asset_loader:ident,
-        $extensions:expr,
-    ) =>{
-        #[allow(unused_imports)]
-        use $mod_name::{
-            $asset_name,
-            $asset_plugin,
-        };
-        mod $mod_name {
-            use super::*;
-            create_asset!(
-                $($derive,)*;
-                $asset_name
-                $(
-                    $field_name : $field_type $( = $handle_path )?,
-                )*?
-                $(
-                    $opt_field_name : $opt_field_type = $opt_handle_path,
-                )*;
-                $asset_plugin,
-                $asset_loader,
-                $extensions,
-            );
-        }
-    };
-    (
-        $($derive:ident,)*;
-        $asset_name:ident
-        $(
-            $field_name:ident : $field_type: ty $( = $handle_path:ident)?,
-        )*?
-        $(
-            $opt_field_name:ident : $opt_field_type: ty = $opt_handle_path:ident,
-        )*;
-        $asset_plugin:ident,
-        $asset_loader:ident,
-        $extensions:expr,
-    ) => {
-        use bevy::asset::ReflectAsset;
-        #[allow(unused_imports)]
-        #[derive(serde::Deserialize, bevy::asset::Asset, bevy::prelude::Reflect)]
-        #[cfg_attr(feature = "saver", derive(serde::Serialize))]
-        #[derive($($derive ,)*)]
-        #[reflect(Asset)]
-        pub struct $asset_name {
-            $(
-                $(
-                    pub $handle_path: String,
-                    #[serde(skip)]
-                )?
-                pub $field_name : $field_type,
-            )*
-            $(
-                pub $opt_handle_path: Option<String>,
-                #[serde(skip)]
-                pub $opt_field_name : Option<$opt_field_type>,
-            )*
-        }
-        create_asset!(
-            $asset_plugin,
-            $asset_loader,
-            $asset_name,
-            $extensions;
-            $(
-                $(
-                    $handle_path -> $field_name
-                )?
-            )*?
-            $(
-                $opt_handle_path -> $opt_field_name
-            )*;
-        );
-    };
-    (
         $asset_plugin:ident,
         $asset_loader:ident,
         $asset_name:ident,
@@ -184,6 +100,90 @@ macro_rules! create_asset {
                 })
             }
         }
+    };
+    (
+        $mod_name:ident;
+        $($derive:ident,)*;
+        $asset_name:ident
+        $(
+            $field_name:ident : $field_type: ty $( = $handle_path:ident)?,
+        )*?
+        $(
+            $opt_field_name:ident : $opt_field_type: ty = $opt_handle_path:ident,
+        )*;
+        $asset_plugin:ident,
+        $asset_loader:ident,
+        $extensions:expr,
+    ) =>{
+        #[allow(unused_imports)]
+        use $mod_name::{
+            $asset_name,
+            $asset_plugin,
+        };
+        mod $mod_name {
+            use super::*;
+            create_asset!(
+                $($derive,)*;
+                $asset_name
+                $(
+                    $field_name : $field_type $( = $handle_path )?,
+                )*?
+                $(
+                    $opt_field_name : $opt_field_type = $opt_handle_path,
+                )*;
+                $asset_plugin,
+                $asset_loader,
+                $extensions,
+            );
+        }
+    };
+    (
+        $($derive:ident,)*;
+        $asset_name:ident
+        $(
+            $field_name:ident : $field_type: ty $( = $handle_path:ident)?,
+        )*?
+        $(
+            $opt_field_name:ident : $opt_field_type: ty = $opt_handle_path:ident,
+        )*;
+        $asset_plugin:ident,
+        $asset_loader:ident,
+        $extensions:expr,
+    ) => {
+        use bevy::asset::ReflectAsset;
+        #[allow(unused_imports)]
+        #[derive(serde::Deserialize, bevy::asset::Asset, bevy::prelude::Reflect)]
+        #[cfg_attr(feature = "saver", derive(serde::Serialize))]
+        #[derive($($derive ,)*)]
+        #[reflect(Asset)]
+        pub struct $asset_name {
+            $(
+                $(
+                    pub $handle_path: String,
+                    #[serde(skip)]
+                )?
+                pub $field_name : $field_type,
+            )*
+            $(
+                pub $opt_handle_path: Option<String>,
+                #[serde(skip)]
+                pub $opt_field_name : Option<$opt_field_type>,
+            )*
+        }
+        create_asset!(
+            $asset_plugin,
+            $asset_loader,
+            $asset_name,
+            $extensions;
+            $(
+                $(
+                    $handle_path -> $field_name
+                )?
+            )*?
+            $(
+                $opt_handle_path -> $opt_field_name
+            )*;
+        );
     };
 }
 
