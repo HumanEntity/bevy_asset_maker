@@ -13,6 +13,9 @@ macro_rules! create_asset {
         $($opt_handle_path:ident -> $opt_field_name:ident)*;
     ) => {
         use bevy::prelude::*;
+        /**
+         * Plugin registering asset, asset loader and asset finalizer
+         * */
         pub struct $asset_plugin;
         impl bevy::prelude::Plugin for $asset_plugin {
             fn build(&self, app: &mut bevy::prelude::App) {
@@ -24,6 +27,9 @@ macro_rules! create_asset {
             }
         }
 
+        /**
+         * Function finalizing assets
+         * */
         #[allow(unused_variables)]
         #[allow(unused_mut)]
         fn finalize_asset(
